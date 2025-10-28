@@ -20,6 +20,21 @@
         <a data-resource data-resource-name="Getting Started Guide" data-resource-type="pdf" data-resource-category="guides" class="btn-nj btn-primary-nj" href="./downloads/sample-guide.pdf" download>Download PDF</a>
       </div>
     </div>
+
+    <div class="card-nj mt-4">
+      <h3 class="mb-2">Intro Video: Starting a Business</h3>
+      <video id="guideVideo" controls preload="metadata" width="100%" style="border-radius: 12px;">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+        Your browser does not support HTML5 video.
+      </video>
+      <div class="form-help mt-2">We record anonymous engagement milestones (25/50/75/100%).</div>
+    </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const v = document.getElementById('guideVideo'); if (v && window.njBindVideo) window.njBindVideo(v, 'Intro: Starting a Business');
+    });
+  </script>
 </body>
 </html>

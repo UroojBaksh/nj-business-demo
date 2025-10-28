@@ -39,10 +39,8 @@
           <div class="col-md-4"><div class="alert-inline"><strong>Email:</strong> ${s3.ownerEmail||'-'}</div></div>
           <div class="col-md-4"><div class="alert-inline"><strong>Ownership %:</strong> ${s3.ownership||'-'}</div></div>
         </div>`;
-
-      // Update persistent status
-      localStorage.setItem('registration_status', 'completed');
-      window.dataLayer.push({ event: 'registration_complete', registration_summary: { total_time: Math.round(totalTime/1000), business_type: s1.entityType||null, permit_count: JSON.parse(sessionStorage.getItem('permit_cart')||'[]').length } });
+      sessionStorage.setItem('registration_status','completed');
+      window.njTrack('registration_complete', { total_time: Math.round(totalTime/1000), business_type: s1.entityType||null, permit_count: JSON.parse(sessionStorage.getItem('permit_cart')||'[]').length });
     })();
   </script>
 </body>

@@ -27,25 +27,18 @@
 
   <script>
     function renderCart() {
-      const cartEl = document.getElementById('cart');
-      const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
+      const cartEl = document.getElementById('cart'); const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
       if (!cart.length) { cartEl.innerHTML = '<div class="alert-inline">No permits added yet.</div>'; return; }
       let total = 0;
-      const rows = cart.map(item => { total += (item.price * (item.quantity||1)); return `<div class="card-nj mb-2"><div class="d-flex justify-content-between"><div><strong>${item.item_name}</strong><div class="small text-muted">${item.item_category} • ${item.item_category2}</div></div><div>$${item.price.toFixed(2)}</div></div></div>`; });
-      cartEl.innerHTML = rows.join('') + `<div class="d-flex justify-content-end"><div class="badge-soft">Total: $${total.toFixed(2)}</div></div>`;
-      window.dataLayer.push({ event: 'begin_checkout', ecommerce: { total_permits: cart.length, total_value: total, estimated_processing_time: 'Varies', items: cart } });
+      const rows = cart.map(item => { total += (item.price * (item.quantity||1)); return `<div class=\"card-nj mb-2\"><div class=\"d-flex justify-content-between\"><div><strong>${item.item_name}</strong><div class=\"small text-muted\">${item.item_category} • ${item.item_category2}</div></div><div>$${item.price.toFixed(2)}</div></div></div>`; });
+      cartEl.innerHTML = rows.join('') + `<div class=\"d-flex justify-content-end\"><div class=\"badge-soft\">Total: $${total.toFixed(2)}</div></div>`;
+      window.njTrack('begin_checkout', { total_permits: cart.length, total_value: total, estimated_processing_time: 'Varies' });
     }
-
     function purchase() {
-      const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
-      let total = cart.reduce((acc, it) => acc + it.price * (it.quantity||1), 0);
-      const tx = 'TX_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
-      window.dataLayer.push({ event: 'purchase', ecommerce: { transaction_id: tx, total_value: total, payment_method: 'card', permits_array: cart, currency: 'USD', items: cart } });
-      alert('Application submitted! Transaction: ' + tx);
-      sessionStorage.removeItem('permit_cart');
-      window.location.href = '../index.html';
+      const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]'); let total = cart.reduce((acc, it) => acc + it.price * (it.quantity||1), 0); const tx = 'TX_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+      window.njTrack('purchase', { transaction_id: tx, total_value: total, permits_array: cart, payment_method: 'card' });
+      alert('Application submitted! Transaction: ' + tx); sessionStorage.removeItem('permit_cart'); window.location.href = '../index.html';
     }
-
     document.addEventListener('DOMContentLoaded', function(){ renderCart(); document.getElementById('purchase').addEventListener('click', purchase); });
   </script>
 </body>

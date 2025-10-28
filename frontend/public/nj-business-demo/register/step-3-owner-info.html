@@ -15,39 +15,23 @@
     </div>
 
     <form id="ownerInfoForm" class="card-nj">
-      <div class="mb-4">
-        <label class="form-label" for="ownerName">Owner Full Name</label>
-        <input class="form-control input-tokenized" id="ownerName" name="ownerName" required />
-      </div>
-      <div class="mb-4">
-        <label class="form-label" for="ownerEmail">Email</label>
-        <input class="form-control input-tokenized" id="ownerEmail" name="ownerEmail" type="email" required />
-      </div>
-      <div class="mb-4">
-        <label class="form-label" for="ownerPhone">Phone</label>
-        <input class="form-control input-tokenized" id="ownerPhone" name="ownerPhone" pattern="^[0-9\-\(\)\s]{10,}$" required />
-      </div>
-      <div class="mb-4">
-        <label class="form-label" for="ownership">Ownership Percentage</label>
-        <input class="form-control input-tokenized" id="ownership" name="ownership" type="number" min="1" max="100" required />
-      </div>
-
+      <div class="mb-4"><label class="form-label" for="ownerName">Owner Full Name</label><input class="form-control input-tokenized" id="ownerName" name="ownerName" required /></div>
+      <div class="mb-4"><label class="form-label" for="ownerEmail">Email</label><input class="form-control input-tokenized" id="ownerEmail" name="ownerEmail" type="email" required /></div>
+      <div class="mb-4"><label class="form-label" for="ownerPhone">Phone</label><input class="form-control input-tokenized" id="ownerPhone" name="ownerPhone" pattern="^[0-9\-\(\)\s]{10,}$" required /></div>
+      <div class="mb-4"><label class="form-label" for="ownership">Ownership Percentage</label><input class="form-control input-tokenized" id="ownership" name="ownership" type="number" min="1" max="100" required /></div>
       <button type="submit" class="btn-nj btn-primary-nj">Review & Confirm →</button>
     </form>
   </div>
 
   <script>
     (function(){
-      const form = document.getElementById('ownerInfoForm');
-      const start = Date.now();
-      window.dataLayer.push({ event: 'form_start', form_details: { form_name: 'business_registration', form_step: '3_owner_info', total_fields: form.querySelectorAll('input,select').length } });
-
+      const form = document.getElementById('ownerInfoForm'); const start = Date.now();
+      window.njTrack('form_start', { form_name: 'business_registration', form_id: 'form_step_3', total_fields: form.querySelectorAll('input,select').length });
       form.addEventListener('submit', function(e){
-        e.preventDefault();
-        const fd = new FormData(form);
-        sessionStorage.setItem('registration_step_3', JSON.stringify({ ownerName: fd.get('ownerName'), ownerEmail: fd.get('ownerEmail'), ownerPhone: fd.get('ownerPhone'), ownership: fd.get('ownership'), completionTime: Date.now() - start }));
-        window.dataLayer.push({ event: 'registration_step_complete', registration_progress: { step_number: 3, step_name: 'owner_info', time_spent: Math.round((Date.now()-start)/1000), fields_completed: 4 } });
-        setTimeout(()=>{ window.location.href = 'step-4-confirmation.html'; }, 300);
+        e.preventDefault(); const fd = new FormData(form);
+        sessionStorage.setItem('registration_step_3', JSON.stringify({ ownerName: fd.get('ownerName'), ownerEmail: fd.get('ownerEmail'), ownerPhone: fd.get('ownerPhone'), ownership: fd.get('ownership'), completionTime: Date.now()-start }));
+        window.njTrack('registration_step_complete', { step_number: 3, step_name: 'owner_info', time_spent: Math.round((Date.now()-start)/1000), fields_completed: 4 });
+        setTimeout(()=>{ window.location.href = './step-4-confirmation.html'; }, 250);
       });
     })();
   </script>
