@@ -122,15 +122,18 @@ frontend:
 
   - task: "Cross-domain navigation to State Portal"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/public/nj-business-demo/js/cross-domain.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial testing required - verify 'Go to State Portal' button decorates and navigates properly"
+        - working: false
+        - agent: "testing"
+        - comment: "Cross-domain button exists in static HTML but not accessible due to React router interference. State portal page loads correctly when accessed directly and shows cross-domain tracking elements. Issue is routing, not functionality."
 
   - task: "Registration flow step-1 form interactions"
     implemented: true
