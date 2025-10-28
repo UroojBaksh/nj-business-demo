@@ -1,29 +1,42 @@
-# New Jersey Business Portal Demo (Static Prototype)
+# NJ Business Portal - GA4 Advanced Implementation Demo
 
-This is a static, multi-page demo of a NJ Business Portal with Google Analytics 4 (GA4) cross-domain tracking and a comprehensive data layer.
+This demo showcases advanced GA4 for a government business portal: cross-domain tracking, enhanced ecommerce, multi-step registration analytics, MWBE equity metrics, and BigQuery modeling. It is a front-end prototype; analytics export relies on GA4→BQ Admin linking.
 
-Contents live under public/nj-business-demo so they are served as-is by the frontend at /nj-business-demo/.
+Live demo path (served by this app): /nj-business-demo/index.html
 
-Key features:
-- GA4 + GTM integration with cross-domain linker (decorated links and forms)
-- Persistent user property schema (localStorage/sessionStorage)
-- 4-step registration with detailed form analytics
+Key features
+- Cross-domain tracking (index.html ↔ state-portal.html) via gtag linker + custom decorator
+- Multi-step registration analytics with abandonment and step timings
 - Enhanced Ecommerce for permits (catalog, details, checkout, purchase)
-- Resources, MWBE programs, and Help center pages
+- User properties persisted in sessionStorage and attached to all events
+- GA4→BigQuery marts for funnels, ecommerce, engagement, equity gap
+- Debugging toolkit with on-page console and export
 
-How to run locally:
-1. yarn start (root React app). Then navigate to http://localhost:3000/nj-business-demo/index.html
+Quick start
+1) Open /nj-business-demo/index.html
+2) Enable debug console in DevTools: `enableGA4Debug()` (disable: `disableGA4Debug()`)
+3) Interact with registration and permits; events appear in the floating panel
 
-GitHub Pages:
-- Host the folder as-is in a gh-pages site; update GA4 linker domains to include your GitHub Pages origin.
+GA4/GTM setup
+- Replace placeholder IDs with your own (GTM-DEMO123, G-DEMO123456)
+- Import analytics/gtm-container.json into GTM and publish
+- Ensure custom parameters are mapped in GA4 as dimensions if needed
 
-Data Layer Schema:
-- Implemented per problem statement in js/tracking.js and individual page scripts.
+BigQuery models
+- See analytics/bigquery/SETUP.md to enable GA4 export to `nj-portal-demo.ga4_raw`
+- Create dataset `nj-portal-demo.analytics`
+- Run SQL files in analytics/bigquery/sql in order (01→06); 07 creates baseline DDL; 08 creates view
+- Use analytics/bigquery/SCHEDULE.md for daily scheduled queries
 
-Cross-domain simulation:
-- Primary: /nj-business-demo/index.html
-- Secondary: /nj-business-demo/state-portal.html (receives linker params and preserves state)
+Looker Studio
+- Connect to analytics.mart_* tables and v_equity_gap view
+- Build dashboards: funnels, abandonment, ecommerce conversion, engagement, equity
 
-Notes:
-- All analytics are demo-only with placeholder IDs.
-- PDF is a lightweight placeholder used solely for download tracking.
+Debug helper
+- File: js/debug-helper.js
+- Features: intercept dataLayer.push, floating console, export JSON, validate setup, network monitor
+- Enable via `enableGA4Debug()`; panel auto-loads on all pages when `ga4_debug` localStorage flag is true
+
+Notes
+- All analytics are demo-mode until wired to your GA4
+- Registration and ecommerce are simulated; no real payments
