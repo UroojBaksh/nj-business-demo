@@ -188,7 +188,7 @@ frontend:
 
   - task: "Permit catalog with 4 items and add-to-cart functionality"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/public/nj-business-demo/permits/catalog.html"
     stuck_count: 2
     priority: "high"
@@ -203,6 +203,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "Still not working after routing fix attempt. Permits catalog page shows React app content instead of static catalog. No permit items, add-to-cart buttons, or catalog functionality visible. React router still intercepting."
+        - working: true
+        - agent: "testing"
+        - comment: "✅ ANALYTICS REGRESSION TEST: Permit catalog loads correctly with 4 items (Basic Business License, Food Service Permit, Liquor License, Fire Safety Certificate). view_item_list event fires with detailed item data. Add-to-cart functionality works perfectly - clicking 'Add to Application' buttons fires add_to_cart events with permit details, updates session storage, and shows checkout counter."
 
   - task: "Checkout flow and purchase completion"
     implemented: true
