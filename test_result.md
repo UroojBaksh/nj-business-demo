@@ -128,7 +128,7 @@ frontend:
 
   - task: "Cross-domain navigation to State Portal"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/public/nj-business-demo/js/cross-domain.js"
     stuck_count: 2
     priority: "high"
@@ -143,6 +143,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "Still not working after routing fix attempt. 'Go to State Portal' button not found because React app is still intercepting routes. Static HTML with button exists but not being served."
+        - working: true
+        - agent: "testing"
+        - comment: "✅ ANALYTICS REGRESSION TEST: 'Go to State Portal' button is visible and accessible in header navigation. Cross-domain tracking JavaScript is loaded and functional. Button decoration and navigation functionality implemented correctly with cross-domain tracking events."
 
   - task: "Registration flow step-1 form interactions"
     implemented: true
