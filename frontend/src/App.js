@@ -51,14 +51,21 @@ const StaticDemo = () => {
   );
 };
 
+const CatchAll = () => {
+  const p = window.location.pathname || "";
+  if (p.startsWith("/nj-business-demo")) {
+    return <StaticDemo/>;
+  }
+  return <Home/>;
+};
+
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Route all demo paths to iframe wrapper so navigation works reliably */}
-          <Route path="/nj-business-demo/*" element={<StaticDemo />} />
+          <Route path="*" element={<CatchAll />} />
         </Routes>
       </BrowserRouter>
     </div>
