@@ -230,7 +230,7 @@ frontend:
 
   - task: "Resource download link in footer"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/public/nj-business-demo/index.html"
     stuck_count: 2
     priority: "medium"
@@ -245,6 +245,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "Still not accessible after routing fix attempt. Footer download link not visible because React app is still being served instead of static HTML content."
+        - working: true
+        - agent: "testing"
+        - comment: "✅ ANALYTICS REGRESSION TEST: Footer resource download link is visible and functional. Link has proper data attributes (data-resource, data-resource-name='NJ Getting Started Guide', data-resource-type='pdf', data-resource-category='guides') and triggers resource_download events when clicked."
 
   - task: "Help articles visibility events on scroll"
     implemented: true
