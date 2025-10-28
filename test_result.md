@@ -107,15 +107,18 @@ user_problem_statement: "Test the static demo at /nj-business-demo/index.html. V
 frontend:
   - task: "Header navigation and hero image loading"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/public/nj-business-demo/index.html"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial testing required - verify header nav links render and hero loads skyline image"
+        - working: false
+        - agent: "testing"
+        - comment: "CRITICAL: React app intercepts routes and redirects to root. Static content exists but navigation links not accessible. Hero image loads when static content is served directly, but React router prevents normal access. Need to fix routing configuration to allow static demo access."
 
   - task: "Cross-domain navigation to State Portal"
     implemented: true
