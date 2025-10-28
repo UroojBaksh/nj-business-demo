@@ -12,29 +12,19 @@
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-DEMO123');</script>
-
-  <!-- GA4 with Cross-Domain Configuration -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-DEMO123456"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);} gtag('js', new Date());
     gtag('config', 'G-DEMO123456', {
-      'linker': {
-        'domains': [
-          'your-username.github.io',
-          'localhost:5500',
-          '127.0.0.1:5500'
-        ],
-        'accept_incoming': true,
-        'decorate_forms': true
-      },
-      'cookie_domain': 'auto',
-      'cookie_flags': 'SameSite=None;Secure'
+      'linker': {'domains': ['your-username.github.io','localhost:5500','127.0.0.1:5500'], 'accept_incoming': true, 'decorate_forms': true},
+      'cookie_domain': 'auto', 'cookie_flags': 'SameSite=None;Secure'
     });
   </script>
   <script src="./js/tracking.js" defer></script>
   <script src="./js/cross-domain.js" defer></script>
   <script src="./js/debug-helper.js" defer></script>
+  <script src="./js/ui.js" defer></script>
 </head>
 <body>
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-DEMO123" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -46,13 +36,21 @@
         <span>New Jersey Business Portal</span>
         <span class="nj-badge">Public Beta</span>
       </div>
-      <nav class="d-none d-md-flex gap-3">
+      <nav class="nj-nav">
         <a href="./permits/catalog.html">Permits</a>
         <a href="./register/step-1-business-type.html">Register</a>
         <a href="./resources/guides.html">Resources</a>
         <a href="./help/articles.html">Help</a>
-        <a href="./state-portal.html" class="btn-nj btn-secondary-nj">Go to State Portal</a>
+        <a href="./state-portal.html" class="btn-nj btn-secondary-nj">State Portal</a>
       </nav>
+      <button id="nj-menu-button" class="nj-menu-button" aria-expanded="false" aria-controls="nj-mobile-menu" aria-label="Open menu">Menu</button>
+    </div>
+    <div id="nj-mobile-menu" data-open="false">
+      <a href="./permits/catalog.html">Permits</a>
+      <a href="./register/step-1-business-type.html">Register</a>
+      <a href="./resources/guides.html">Resources</a>
+      <a href="./help/articles.html">Help</a>
+      <a href="./state-portal.html" class="btn-nj btn-secondary-nj" style="margin-top:8px;">State Portal</a>
     </div>
   </header>
 

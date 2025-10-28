@@ -8,11 +8,20 @@
   <link rel="stylesheet" href="../css/styles.css">
   <script src="../js/tracking.js" defer></script>
   <script src="../js/debug-helper.js" defer></script>
+  <script src="../js/ui.js" defer></script>
 </head>
 <body>
-  <div class="container-nj mt-5">
-    <div class="progress mb-4" style="height: 30px;">
-      <div class="progress-bar" role="progressbar" style="width: 25%">Step 1 of 4: Business Type</div>
+  <div class="container-nj mt-4">
+    <div class="step-toolbar">
+      <div class="left">
+        <a class="btn-nj btn-ghost-nj btn-sm-nj" href="../index.html">← Back</a>
+        <h2 class="m-0">Step 1: Business Type</h2>
+      </div>
+      <a class="btn-nj btn-secondary-nj btn-sm-nj" href="../permits/catalog.html">Skip to Permits</a>
+    </div>
+
+    <div class="progress mb-3" style="height: 26px;">
+      <div class="progress-bar" role="progressbar" style="width: 25%">Step 1 of 4</div>
     </div>
 
     <form id="businessTypeForm" class="card-nj">
@@ -56,56 +65,22 @@
         </select>
       </div>
 
-      <button type="submit" class="btn-nj btn-primary-nj btn-lg">Continue to Business Info →</button>
+      <div class="d-flex justify-content-between align-items-center">
+        <a class="btn-nj btn-ghost-nj" href="../index.html">← Back</a>
+        <button type="submit" class="btn-nj btn-primary-nj">Continue to Business Info →</button>
+      </div>
     </form>
   </div>
 
   <script>
-  // Begin registration on page load
   document.addEventListener('DOMContentLoaded', function(){
     window.njTrack('begin_registration', { entry_point: 'direct_load', device_type: (window.innerWidth<768? 'mobile':'desktop') });
   });
-
-  class FormTracker {
-    constructor(formId) { this.form = document.getElementById(formId); this.startTime = Date.now(); this.fieldInteractions = {}; this.init(); }
-    init() {
-      window.njTrack('form_start', { form_name: 'business_registration', form_id: 'form_step_1', total_fields: this.form.querySelectorAll('input, select, textarea').length });
-      this.trackFieldInteractions(); this.trackFormSubmission(); this.trackAbandonment();
-    }
-    trackFieldInteractions(){
-      const fields = this.form.querySelectorAll('input, select, textarea');
-      fields.forEach(field => {
-        let t0; field.addEventListener('focus', ()=>{ t0=Date.now(); this.fieldInteractions[field.name] = this.fieldInteractions[field.name] || { touches:0,totalTime:0,completed:false }; this.fieldInteractions[field.name].touches++; window.njTrack('form_field_focus', { field_name: field.name, field_type: field.type, touch_number: this.fieldInteractions[field.name].touches }); });
-        field.addEventListener('blur', ()=>{ const dt=Date.now()-t0; this.fieldInteractions[field.name].totalTime += dt; this.fieldInteractions[field.name].completed = field.value!==''; window.njTrack('form_field_complete', { field_name: field.name, time_spent_ms: dt, total_time_ms: this.fieldInteractions[field.name].totalTime, field_completed: this.fieldInteractions[field.name].completed, value_length: (field.value||'').length }); window.njForm.progress(this.form); });
-        if (field.tagName==='SELECT') field.addEventListener('change', ()=> window.njTrack('form_dropdown_selection', { field_name: field.name, selected_value: field.value, selected_text: field.options[field.selectedIndex]?.text }));
-        if (field.type==='checkbox' || field.type==='radio') field.addEventListener('change', ()=> window.njTrack('form_option_toggle', { field_name: field.name, field_value: field.value, is_checked: field.checked }));
-      });
-    }
-    trackFormSubmission(){
-      this.form.addEventListener('submit', (e)=>{
-        e.preventDefault();
-        const fd = new FormData(this.form); const totalTime = Date.now()-this.startTime; const mwbe = fd.getAll('mwbe[]');
-        // Persist to session
-        sessionStorage.setItem('registration_status','in_progress');
-        sessionStorage.setItem('business_type', fd.get('entityType'));
-        sessionStorage.setItem('industry_category', fd.get('industry'));
-        sessionStorage.setItem('geographic_region', fd.get('region'));
-        sessionStorage.setItem('mwbe_minority', String(mwbe.includes('minority_owned')));
-        sessionStorage.setItem('mwbe_women', String(mwbe.includes('women_owned')));
-        sessionStorage.setItem('mwbe_veteran', String(mwbe.includes('veteran_owned')));
-        sessionStorage.setItem('mwbe_disabled', String(mwbe.includes('disabled_owned')));
-        sessionStorage.setItem('registration_step_1', JSON.stringify({ entityType: fd.get('entityType'), industry: fd.get('industry'), mwbeStatus: mwbe, region: fd.get('region'), completionTime: totalTime }));
-
-        window.njTrack('registration_step_complete', { step_number: 1, step_name: 'business_type', time_spent: Math.round(totalTime/1000), fields_completed: Object.keys(this.fieldInteractions).length });
-        setTimeout(()=>{ window.location.href = './step-2-business-info.html'; }, 250);
-      });
-    }
-    trackAbandonment(){
-      window.addEventListener('beforeunload', ()=>{
-        const total = this.form.elements.length; const filled = Array.from(this.form.elements).filter(f=>f.value!=='').length; const rate = total>0? Math.round((filled/total)*100):0;
-        if (rate<100){ navigator.sendBeacon('/track', JSON.stringify({ event: 'registration_abandoned', last_step: 1, completion_percentage: rate, abandonment_reason: 'navigation', user_id: sessionStorage.getItem('user_id'), session_id: sessionStorage.getItem('session_id') })); }
-      });
-    }
+  class FormTracker { constructor(formId){ this.form=document.getElementById(formId); this.startTime=Date.now(); this.fieldInteractions={}; this.init(); }
+    init(){ window.njTrack('form_start',{ form_name:'business_registration', form_id:'form_step_1', total_fields:this.form.querySelectorAll('input, select, textarea').length }); this.trackFieldInteractions(); this.trackFormSubmission(); this.trackAbandonment(); }
+    trackFieldInteractions(){ const fields=this.form.querySelectorAll('input, select, textarea'); fields.forEach(field=>{ let t0; field.addEventListener('focus',()=>{ t0=Date.now(); this.fieldInteractions[field.name]=this.fieldInteractions[field.name]||{touches:0,totalTime:0,completed:false}; this.fieldInteractions[field.name].touches++; window.njTrack('form_field_focus',{ field_name:field.name, field_type:field.type, touch_number:this.fieldInteractions[field.name].touches });}); field.addEventListener('blur',()=>{ const dt=Date.now()-t0; this.fieldInteractions[field.name].totalTime+=dt; this.fieldInteractions[field.name].completed=field.value!==''; window.njTrack('form_field_complete',{ field_name:field.name, time_spent_ms:dt, total_time_ms:this.fieldInteractions[field.name].totalTime, field_completed:this.fieldInteractions[field.name].completed, value_length:(field.value||'').length }); window.njForm.progress(this.form);}); if(field.tagName==='SELECT') field.addEventListener('change',()=> window.njTrack('form_dropdown_selection',{ field_name:field.name, selected_value:field.value, selected_text:field.options[field.selectedIndex]?.text })); if(field.type==='checkbox'||field.type==='radio') field.addEventListener('change',()=> window.njTrack('form_option_toggle',{ field_name:field.name, field_value:field.value, is_checked:field.checked })); }); }
+    trackFormSubmission(){ this.form.addEventListener('submit',(e)=>{ e.preventDefault(); const fd=new FormData(this.form); const totalTime=Date.now()-this.startTime; const mwbe=fd.getAll('mwbe[]'); sessionStorage.setItem('registration_status','in_progress'); sessionStorage.setItem('business_type',fd.get('entityType')); sessionStorage.setItem('industry_category',fd.get('industry')); sessionStorage.setItem('geographic_region',fd.get('region')); sessionStorage.setItem('mwbe_minority',String(mwbe.includes('minority_owned'))); sessionStorage.setItem('mwbe_women',String(mwbe.includes('women_owned'))); sessionStorage.setItem('mwbe_veteran',String(mwbe.includes('veteran_owned'))); sessionStorage.setItem('mwbe_disabled',String(mwbe.includes('disabled_owned'))); sessionStorage.setItem('registration_step_1', JSON.stringify({ entityType: fd.get('entityType'), industry: fd.get('industry'), mwbeStatus: mwbe, region: fd.get('region'), completionTime: totalTime })); window.njTrack('registration_step_complete',{ step_number:1, step_name:'business_type', time_spent: Math.round(totalTime/1000), fields_completed:Object.keys(this.fieldInteractions).length }); setTimeout(()=>{ window.location.href = './step-2-business-info.html'; }, 250); }); }
+    trackAbandonment(){ window.addEventListener('beforeunload',()=>{ const total=this.form.elements.length; const filled=Array.from(this.form.elements).filter(f=>f.value!=='').length; const rate= total>0? Math.round((filled/total)*100):0; if(rate<100){ navigator.sendBeacon('/track', JSON.stringify({ event:'registration_abandoned', last_step:1, completion_percentage:rate, abandonment_reason:'navigation', user_id: sessionStorage.getItem('user_id'), session_id: sessionStorage.getItem('session_id') })); } }); }
   }
   document.addEventListener('DOMContentLoaded', ()=> new FormTracker('businessTypeForm'));
   </script>

@@ -8,11 +8,19 @@
   <link rel="stylesheet" href="../css/styles.css">
   <script src="../js/tracking.js" defer></script>
   <script src="../js/debug-helper.js" defer></script>
+  <script src="../js/ui.js" defer></script>
 </head>
 <body>
-  <div class="container-nj mt-5">
-    <div class="progress mb-4" style="height: 30px;">
-      <div class="progress-bar" role="progressbar" style="width: 75%">Step 3 of 4: Owner Info</div>
+  <div class="container-nj mt-4">
+    <div class="step-toolbar">
+      <div class="left">
+        <a class="btn-nj btn-ghost-nj btn-sm-nj" href="./step-2-business-info.html">← Back</a>
+        <h2 class="m-0">Step 3: Owner Info</h2>
+      </div>
+    </div>
+
+    <div class="progress mb-3" style="height: 26px;">
+      <div class="progress-bar" role="progressbar" style="width: 75%">Step 3 of 4</div>
     </div>
 
     <form id="ownerInfoForm" class="card-nj">
@@ -20,7 +28,10 @@
       <div class="mb-4"><label class="form-label" for="ownerEmail">Email</label><input class="form-control input-tokenized" id="ownerEmail" name="ownerEmail" type="email" required /></div>
       <div class="mb-4"><label class="form-label" for="ownerPhone">Phone</label><input class="form-control input-tokenized" id="ownerPhone" name="ownerPhone" pattern="^[0-9\-\(\)\s]{10,}$" required /></div>
       <div class="mb-4"><label class="form-label" for="ownership">Ownership Percentage</label><input class="form-control input-tokenized" id="ownership" name="ownership" type="number" min="1" max="100" required /></div>
-      <button type="submit" class="btn-nj btn-primary-nj">Review & Confirm →</button>
+      <div class="d-flex justify-content-between align-items-center">
+        <a class="btn-nj btn-ghost-nj" href="./step-2-business-info.html">← Back</a>
+        <button type="submit" class="btn-nj btn-primary-nj">Review & Confirm →</button>
+      </div>
     </form>
   </div>
 
