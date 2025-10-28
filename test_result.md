@@ -289,3 +289,5 @@ agent_communication:
     - message: "Starting comprehensive testing of NJ Business Portal static demo. Will test all functionality including navigation, forms, ecommerce flow, and cross-domain tracking."
     - agent: "testing"
     - message: "CRITICAL ISSUE FOUND: React app is intercepting all routes and redirecting to root path, preventing access to static demo pages. Static content exists but is not accessible due to client-side routing interference. Some pages load correctly when accessed directly (like help articles), but navigation and interactive features are blocked by React router."
+    - agent: "testing"
+    - message: "RE-TESTING AFTER ROUTING FIX: The routing fix attempted is not working properly. React app still intercepts /nj-business-demo/index.html and other main routes, showing React content instead of static demo. StaticDemo component with iframe wrapper is not being used. However, some individual pages like registration step-1 and help articles do load correctly. The routing configuration needs further adjustment to properly serve static content."
