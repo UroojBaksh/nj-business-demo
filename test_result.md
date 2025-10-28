@@ -182,6 +182,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "Step-1 form loads and can be filled, but form submission does not progress to step-2. Continue button clicks but stays on same page. Step navigation still not working properly."
+        - working: false
+        - agent: "testing"
+        - comment: "❌ ANALYTICS REGRESSION TEST: Registration flow does not progress beyond step-1. Form can be filled but Continue button doesn't navigate to step-2. No registration_complete event fires because multi-step flow is broken. Form submission logic needs fixing to enable step progression."
 
   - task: "Permit catalog with 4 items and add-to-cart functionality"
     implemented: true
