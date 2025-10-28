@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Your Business - Step 1</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="../js/tracking.js" defer></script>
+</head>
+<body>
+  <div class="container-nj mt-5">
+    <div class="progress mb-4" style="height: 30px;">
+      <div class="progress-bar" role="progressbar" style="width: 25%">Step 1 of 4: Business Type</div>
+    </div>
+
+    <form id="businessTypeForm" class="card-nj">
+      <div class="mb-4">
+        <h3>Select Your Business Entity Type</h3>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="entityType" id="llc" value="LLC" required>
+          <label class="form-check-label" for="llc"><strong>Limited Liability Company (LLC)</strong><small class="d-block text-muted">Most popular, protects personal assets</small></label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="entityType" id="corp" value="Corporation">
+          <label class="form-check-label" for="corp"><strong>Corporation</strong><small class="d-block text-muted">Best for raising capital</small></label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="entityType" id="nonprofit" value="NonProfit">
+          <label class="form-check-label" for="nonprofit"><strong>Non-Profit</strong><small class="d-block text-muted">Mission-driven organizations</small></label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="entityType" id="sole" value="SoleProprietor">
+          <label class="form-check-label" for="sole"><strong>Sole Proprietor</strong><small class="d-block text-muted">Simple and fast</small></label>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="industry" class="form-label">Industry Category</label>
+        <select class="form-select" id="industry" name="industry" required>
+          <option value="">Choose your industry...</option>
+          <option value="food_service">Food Service & Restaurant</option>
+          <option value="retail">Retail & E-commerce</option>
+          <option value="professional">Professional Services</option>
+          <option value="technology">Technology & Software</option>
+          <option value="construction">Construction & Trades</option>
+          <option value="healthcare">Healthcare & Medical</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <h3>Ownership Demographics (Optional)</h3>
+        <p class="text-muted">Check all that apply for potential certification benefits</p>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="mwbe[]" value="minority_owned" id="minority">
+          <label class="form-check-label" for="minority">Minority-Owned Business</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="mwbe[]" value="women_owned" id="women">
+          <label class="form-check-label" for="women">Women-Owned Business</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="mwbe[]" value="veteran_owned" id="veteran">
+          <label class="form-check-label" for="veteran">Veteran-Owned Business</label>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="region" class="form-label">New Jersey Region</label>
+        <select class="form-select" id="region" name="region" required>
+          <option value="">Select your region...</option>
+          <option value="North">North Jersey</option>
+          <option value="Central">Central Jersey</option>
+          <option value="South">South Jersey</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-nj btn-primary-nj btn-lg">Continue to Business Info →</button>
+    </form>
+  </div>
+
+  <script>
+  class FormTracker {
+    constructor(formId) {
+      this.form = document.getElementById(formId);
+      this.startTime = Date.now();
+      this.fieldInteractions = {};
+      this.init();
+    }
+
+    init() {
+      window.dataLayer.push({
+        'event': 'form_start',
+        'form_details': {
+          'form_name': 'business_registration',
+          'form_step': '1_business_type',
+          'total_fields': this.form.querySelectorAll('input, select, textarea').length
+        }
+      });
+      this.trackFieldInteractions();
+      this.trackFormSubmission();
+      this.trackAbandonment();
+    }
+
+    trackFieldInteractions() {
+      const fields = this.form.querySelectorAll('input, select, textarea');
+      fields.forEach(field => {
+        let fieldStartTime;
+        field.addEventListener('focus', () => {
+          fieldStartTime = Date.now();
+          if (!this.fieldInteractions[field.name]) {
+            this.fieldInteractions[field.name] = { touches: 0, totalTime: 0, completed: false };
+          }
+          this.fieldInteractions[field.name].touches++;
+          window.dataLayer.push({ 'event': 'form_field_focus', 'field_details': { 'field_name': field.name, 'field_type': field.type, 'touch_number': this.fieldInteractions[field.name].touches } });
+        });
+        field.addEventListener('blur', () => {
+          const timeSpent = Date.now() - fieldStartTime;
+          this.fieldInteractions[field.name].totalTime += timeSpent;
+          this.fieldInteractions[field.name].completed = field.value !== '';
+          window.dataLayer.push({ 'event': 'form_field_complete', 'field_details': { 'field_name': field.name, 'time_spent_ms': timeSpent, 'total_time_ms': this.fieldInteractions[field.name].totalTime, 'field_completed': this.fieldInteractions[field.name].completed, 'value_length': (field.value||'').length } });
+        });
+        if (field.tagName === 'SELECT') {
+          field.addEventListener('change', () => {
+            window.dataLayer.push({ 'event': 'form_dropdown_selection', 'selection_details': { 'field_name': field.name, 'selected_value': field.value, 'selected_text': field.options[field.selectedIndex]?.text } });
+          });
+        }
+        if (field.type === 'checkbox' || field.type === 'radio') {
+          field.addEventListener('change', () => {
+            window.dataLayer.push({ 'event': 'form_option_toggle', 'option_details': { 'field_name': field.name, 'field_value': field.value, 'is_checked': field.checked } });
+          });
+        }
+      });
+    }
+
+    trackFormSubmission() {
+      this.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(this.form);
+        const totalTime = Date.now() - this.startTime;
+        const mwbeValues = formData.getAll('mwbe[]');
+
+        // Persist to storage for user properties
+        localStorage.setItem('registration_status', 'in_progress');
+        localStorage.setItem('business_type', formData.get('entityType'));
+        localStorage.setItem('industry', formData.get('industry'));
+        localStorage.setItem('region', formData.get('region'));
+        localStorage.setItem('mwbe_minority', String(mwbeValues.includes('minority_owned')));
+        localStorage.setItem('mwbe_women', String(mwbeValues.includes('women_owned')));
+        localStorage.setItem('mwbe_veteran', String(mwbeValues.includes('veteran_owned')));
+
+        sessionStorage.setItem('registration_step_1', JSON.stringify({
+          entityType: formData.get('entityType'),
+          industry: formData.get('industry'),
+          mwbeStatus: mwbeValues,
+          region: formData.get('region'),
+          completionTime: totalTime
+        }));
+
+        window.dataLayer.push({
+          'event': 'registration_step_complete',
+          'registration_progress': {
+            'step_number': 1,
+            'step_name': 'business_type',
+            'completion_time_seconds': Math.round(totalTime / 1000),
+            'field_interaction_count': Object.keys(this.fieldInteractions).length
+          },
+          'business_properties': {
+            'entity_type': formData.get('entityType'),
+            'industry_category': formData.get('industry'),
+            'geographic_region': formData.get('region')
+          },
+          'owner_demographics': {
+            'is_minority_owned': mwbeValues.includes('minority_owned'),
+            'is_women_owned': mwbeValues.includes('women_owned'),
+            'is_veteran_owned': mwbeValues.includes('veteran_owned'),
+            'mwbe_certifications': mwbeValues.join(',') || 'none'
+          }
+        });
+
+        setTimeout(() => { window.location.href = 'step-2-business-info.html'; }, 400);
+      });
+    }
+
+    trackAbandonment() {
+      window.addEventListener('beforeunload', () => {
+        const filledFields = Array.from(this.form.elements).filter(field => field.value !== '').length;
+        const totalFields = this.form.elements.length;
+        const completionRate = (filledFields / totalFields) * 100;
+        if (completionRate < 100) {
+          navigator.sendBeacon('/track', JSON.stringify({
+            event: 'form_abandoned',
+            abandonment_details: {
+              form_step: 'business_type',
+              completion_rate: Math.round(completionRate),
+              time_on_page: Math.round((Date.now() - this.startTime) / 1000),
+              last_field_interacted: Object.keys(this.fieldInteractions).pop()
+            }
+          }));
+        }
+      });
+    }
+  }
+  document.addEventListener('DOMContentLoaded', () => { new FormTracker('businessTypeForm'); });
+  </script>
+</body>
+</html>

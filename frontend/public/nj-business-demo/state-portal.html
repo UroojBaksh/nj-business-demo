@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>State of New Jersey Portal (Simulated)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <!-- GTM + GA4 same container, accept incoming linker -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-DEMO123');</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DEMO123456"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} gtag('js', new Date());
+    gtag('config', 'G-DEMO123456', {
+      'linker': { 'domains': ['your-username.github.io','localhost:5500','127.0.0.1:5500'], 'accept_incoming': true, 'decorate_forms': true },
+      'cookie_domain': 'auto', 'cookie_flags': 'SameSite=None;Secure'
+    });
+  </script>
+  <script src="./js/tracking.js" defer></script>
+  <script src="./js/cross-domain.js" defer></script>
+</head>
+<body>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-DEMO123" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <header class="nj-header">
+    <div class="container-nj d-flex align-items-center justify-content-between py-3">
+      <div class="nj-brand"><span class="badge-soft">NJ</span><span>State of NJ - Services</span></div>
+      <nav class="d-none d-md-flex gap-3">
+        <a href="./index.html">Back to Business Portal</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="section container-nj">
+    <div class="alert-inline mb-3">Cross-domain source: <strong id="cd-source">(pending)</strong></div>
+    <h1 class="mb-3">State Services Landing (Simulated)</h1>
+    <p>You're now on the simulated state domain. Linker parameters are accepted and the session continues across domains.</p>
+
+    <div class="card-nj mt-4">
+      <h3>Driver Registration Service</h3>
+      <p class="mb-3">Example service to demonstrate cross-domain link decoration and arrival tracking.</p>
+      <div class="cta-row">
+        <a class="btn-nj btn-primary-nj" href="./index.html">Return to Portal</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      var src = sessionStorage.getItem('cross_domain_source') || document.referrer || 'unknown';
+      document.getElementById('cd-source').textContent = src || 'unknown';
+    });
+  </script>
+</body>
+</html>
