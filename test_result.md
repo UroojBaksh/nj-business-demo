@@ -152,15 +152,18 @@ frontend:
 
   - task: "Registration flow steps 2-4 with summary"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/public/nj-business-demo/register/"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial testing required - verify step-2, step-3, step-4 flow with summary display"
+        - working: false
+        - agent: "testing"
+        - comment: "All registration step files exist with proper form structures and JavaScript tracking, but cannot be accessed due to React router redirects. Step navigation blocked by routing issues."
 
   - task: "Permit catalog with 4 items and add-to-cart functionality"
     implemented: true
