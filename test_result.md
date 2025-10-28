@@ -137,15 +137,18 @@ frontend:
 
   - task: "Registration flow step-1 form interactions"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/public/nj-business-demo/register/step-1-business-type.html"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial testing required - verify form interactions fire and navigation to step-2 works"
+        - working: false
+        - agent: "testing"
+        - comment: "Registration step-1 page loads and form fields can be filled, but form submission fails due to JavaScript routing conflicts. Form tracking and validation code exists but cannot execute properly due to React app interference."
 
   - task: "Registration flow steps 2-4 with summary"
     implemented: true
