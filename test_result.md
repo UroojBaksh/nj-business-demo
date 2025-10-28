@@ -217,7 +217,7 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/public/nj-business-demo/index.html"
-    stuck_count: 1
+    stuck_count: 2
     priority: "medium"
     needs_retesting: false
     status_history:
@@ -227,6 +227,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "Resource download link exists in static HTML with proper data attributes for tracking, but footer not accessible due to React app override. Link implemented but not visible."
+        - working: false
+        - agent: "testing"
+        - comment: "Still not accessible after routing fix attempt. Footer download link not visible because React app is still being served instead of static HTML content."
 
   - task: "Help articles visibility events on scroll"
     implemented: true
