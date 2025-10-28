@@ -197,15 +197,18 @@ frontend:
 
   - task: "Resource download link in footer"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/public/nj-business-demo/index.html"
-    stuck_count: 0
+    stuck_count: 1
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial testing required - verify resource download link exists in footer"
+        - working: false
+        - agent: "testing"
+        - comment: "Resource download link exists in static HTML with proper data attributes for tracking, but footer not accessible due to React app override. Link implemented but not visible."
 
   - task: "Help articles visibility events on scroll"
     implemented: true
