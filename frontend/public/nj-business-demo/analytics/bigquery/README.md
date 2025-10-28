@@ -1,65 +1,56 @@
-# GA4 BigQuery Export and Derived Metrics
+# GA4 → BigQuery Analytics Models for NJ Business Portal
 
-This project is instrumented for GA4. To analyze in BigQuery, link your GA4 property to BigQuery (Admin > BigQuery Links) and query the exported events tables (events_YYYYMMDD).
+This folder contains setup steps and SQL models to build analytics marts and views on GA4 export data. Dashboarding is assumed in Looker Studio.
 
-Recommended custom dimensions (configure in GA4 UI):
-- Event-scoped: business_entity_type, industry_vertical, mwbe_certification_status, geographic_region, form_completion_rate, session_duration_category, interaction_quality_score, content_engagement_depth
-- User-scoped: lifetime_permits_purchased, user_type, preferred_language
+Datasets
+- Raw export: `nj-portal-demo.ga4_raw` (from GA4 BigQuery link)
+- Modeling: `nj-portal-demo.analytics`
 
-Example: Recent registration funnel
-```sql
--- Registrations started vs completed by entity type
-WITH ev AS (
-  SELECT event_date, event_timestamp, event_name,
-         (SELECT value.string_value FROM UNNEST(event_params) WHERE key='business_entity_type') AS business_entity_type,
-         (SELECT value.int_value FROM UNNEST(event_params) WHERE key='step_number') AS step_number,
-         (SELECT value.string_value FROM UNNEST(event_params) WHERE key='step_name') AS step_name,
-         user_pseudo_id
-  FROM `your_project.analytics_XXXX.events_*`
-  WHERE event_name IN ('begin_registration','registration_step_complete','registration_complete')
-)
-SELECT business_entity_type,
-       SUM(CASE WHEN event_name='begin_registration' THEN 1 ELSE 0 END) AS begins,
-       SUM(CASE WHEN event_name='registration_complete' THEN 1 ELSE 0 END) AS completes
-FROM ev
-GROUP BY business_entity_type
-ORDER BY completes DESC;
-```
+Files
+- SETUP.md: Admin steps with screenshots to enable GA4 → BigQuery export
+- SCHEDULE.md: Create daily scheduled queries and ordering
+- sql/01_mart_portal_events.sql: Flattens GA4 events into portal-wide event table
+- sql/02_mart_session_summary.sql: Session-level rollups (duration, step completion rate, purchases)
+- sql/03_mart_user_summary.sql: User-level aggregates and last registration status
+- sql/04_mart_registration_funnel.sql: Funnel by segment (region/county/entity/industry/mwbe)
+- sql/05_mart_ecommerce.sql: Permit conversion and revenue metrics
+- sql/06_mart_engagement.sql: Engagement summary and correlation to session results
+- sql/07_bench_equity.sql: DDL for public baselines; load separately
+- sql/08_equity_gap_view.sql: View computing equity gap vs baselines
 
-Ecommerce performance
-```sql
-WITH ev AS (
-  SELECT event_timestamp, event_name,
-         (SELECT value.string_value FROM UNNEST(event_params) WHERE key='permit_id') AS permit_id,
-         (SELECT value.string_value FROM UNNEST(event_params) WHERE key='permit_name') AS permit_name,
-         (SELECT value.float_value FROM UNNEST(event_params) WHERE key='price') AS price,
-         (SELECT value.int_value FROM UNNEST(event_params) WHERE key='quantity') AS quantity,
-         user_pseudo_id
-  FROM `your_project.analytics_XXXX.events_*`
-  WHERE event_name IN ('view_item','add_to_cart','purchase')
-)
-SELECT permit_id, permit_name,
-       SUM(CASE WHEN event_name='view_item' THEN 1 ELSE 0 END) AS views,
-       SUM(CASE WHEN event_name='add_to_cart' THEN 1 ELSE 0 END) AS adds,
-       SUM(CASE WHEN event_name='purchase' THEN 1 ELSE 0 END) AS purchases
-FROM ev
-GROUP BY permit_id, permit_name
-ORDER BY purchases DESC;
-```
+How to run each SQL
+1) Create modeling dataset
+   - In BigQuery → Create dataset `analytics` in project `nj-portal-demo`
+2) Open SQL Editor and paste the file contents in order:
+   - 01 → 02 → 03 → 04 → 05 → 06
+   - 07 creates a baseline table (load your data next)
+   - 08 creates the equity gap view
+3) Execute each; verify tables appear in `nj-portal-demo.analytics`
 
-Engagement depth and session quality
-```sql
-SELECT
-  (SELECT value.string_value FROM UNNEST(event_params) WHERE key='session_duration_category') AS session_duration_category,
-  (SELECT value.int_value FROM UNNEST(event_params) WHERE key='content_engagement_depth') AS depth,
-  AVG((SELECT value.int_value FROM UNNEST(event_params) WHERE key='interaction_quality_score')) AS avg_iq,
-  COUNT(*) AS events
-FROM `your_project.analytics_XXXX.events_*`
-GROUP BY session_duration_category, depth
-ORDER BY avg_iq DESC;
-```
+Scheduled queries (Daily)
+- See SCHEDULE.md for recommended order and times
+- Set destination write mode to `WRITE_TRUNCATE` (CREATE OR REPLACE is used)
 
-Notes:
-- Replace `your_project.analytics_XXXX` with your GA4 dataset.
-- Consider sessionization using ga_session_id from GA4 export if enabled.
-- For user-scoped dimensions, use user_properties in GA4 UI mapping.
+Looker Studio
+- Connect to `analytics.mart_*` tables and the `v_equity_gap` view
+- Build dashboards:
+  - Registration funnel with step percentages
+  - Abandonment (low step_completion_rate sessions)
+  - Ecommerce conversion by permit
+  - Engagement (downloads, video milestones, help reads) vs completion
+  - Equity gap by county/region/industry
+
+Troubleshooting GA4 → BQ field mapping
+- If user-scoped properties are NULL in `user_properties`:
+  - Ensure GTM/GA4 sets user_properties using gtag or GTM tag configuration
+  - Alternatively, also capture them as event parameters and adapt SQL to extract from `event_params`
+- If custom event parameters are missing:
+  - In GTM GA4 Event tag, explicitly map parameters (e.g., session_id, step_number, permit_id)
+- Intraday tables:
+  - If enabled, union `ga4_raw.events_*` and `ga4_raw.events_intraday_*` for near-real-time reporting
+- Dataset location mismatch:
+  - GA4 property region must match BigQuery dataset location
+
+Notes
+- All IDs and datasets are examples; change project/dataset if yours differ
+- Equity baselines must be curated and maintained externally then loaded into `analytics.bench_equity`
