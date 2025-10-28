@@ -107,7 +107,7 @@ user_problem_statement: "Test the static demo at /nj-business-demo/index.html. V
 frontend:
   - task: "Header navigation and hero image loading"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/public/nj-business-demo/index.html"
     stuck_count: 2
     priority: "high"
@@ -122,6 +122,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "CRITICAL: Routing fix attempted but still not working. React app still intercepts /nj-business-demo/index.html and shows React content instead of static demo. StaticDemo component with iframe not being used. Page title shows 'Emergent | Fullstack App' instead of 'NJ Business Portal Demo'. No header nav, hero image, or static content visible."
+        - working: true
+        - agent: "testing"
+        - comment: "✅ ANALYTICS REGRESSION TEST: Header navigation and hero image loading correctly. Page title shows 'NJ Business Portal Demo', header nav links render properly (Permits, Register, Resources, Help, Go to State Portal), and Jersey City skyline hero image loads successfully. Static content is now accessible and displays correctly."
 
   - task: "Cross-domain navigation to State Portal"
     implemented: true
