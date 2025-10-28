@@ -182,15 +182,18 @@ frontend:
 
   - task: "Checkout flow and purchase completion"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/public/nj-business-demo/permits/checkout.html"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial testing required - verify checkout renders items, submit purchase triggers alert and returns home"
+        - working: false
+        - agent: "testing"
+        - comment: "Checkout page exists with cart rendering and purchase functionality, but not accessible due to React router redirects. Purchase flow implemented but blocked by routing."
 
   - task: "Resource download link in footer"
     implemented: true
