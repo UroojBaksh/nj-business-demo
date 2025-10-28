@@ -181,7 +181,7 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/public/nj-business-demo/permits/catalog.html"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
@@ -191,6 +191,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "Permit catalog HTML exists with 4 permit items and ecommerce tracking JavaScript, but page not accessible due to React router redirects. Functionality implemented but blocked by routing."
+        - working: false
+        - agent: "testing"
+        - comment: "Still not working after routing fix attempt. Permits catalog page shows React app content instead of static catalog. No permit items, add-to-cart buttons, or catalog functionality visible. React router still intercepting."
 
   - task: "Checkout flow and purchase completion"
     implemented: true
