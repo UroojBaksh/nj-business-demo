@@ -109,7 +109,7 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/public/nj-business-demo/index.html"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
@@ -119,6 +119,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "CRITICAL: React app intercepts routes and redirects to root. Static content exists but navigation links not accessible. Hero image loads when static content is served directly, but React router prevents normal access. Need to fix routing configuration to allow static demo access."
+        - working: false
+        - agent: "testing"
+        - comment: "CRITICAL: Routing fix attempted but still not working. React app still intercepts /nj-business-demo/index.html and shows React content instead of static demo. StaticDemo component with iframe not being used. Page title shows 'Emergent | Fullstack App' instead of 'NJ Business Portal Demo'. No header nav, hero image, or static content visible."
 
   - task: "Cross-domain navigation to State Portal"
     implemented: true
