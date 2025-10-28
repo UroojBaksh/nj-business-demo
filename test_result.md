@@ -167,15 +167,18 @@ frontend:
 
   - task: "Permit catalog with 4 items and add-to-cart functionality"
     implemented: true
-    working: "NA"
+    working: false
     file: "/app/frontend/public/nj-business-demo/permits/catalog.html"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial testing required - verify catalog loads 4 items, add-to-cart updates session and counter"
+        - working: false
+        - agent: "testing"
+        - comment: "Permit catalog HTML exists with 4 permit items and ecommerce tracking JavaScript, but page not accessible due to React router redirects. Functionality implemented but blocked by routing."
 
   - task: "Checkout flow and purchase completion"
     implemented: true
