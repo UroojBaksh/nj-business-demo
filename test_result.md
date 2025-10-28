@@ -199,7 +199,7 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/public/nj-business-demo/permits/checkout.html"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
@@ -209,6 +209,9 @@ frontend:
         - working: false
         - agent: "testing"
         - comment: "Checkout page exists with cart rendering and purchase functionality, but not accessible due to React router redirects. Purchase flow implemented but blocked by routing."
+        - working: false
+        - agent: "testing"
+        - comment: "Cannot test checkout flow because permits catalog is not accessible. React router still intercepting all /nj-business-demo/ routes and showing React app instead of static content."
 
   - task: "Resource download link in footer"
     implemented: true
