@@ -101,3 +101,136 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Test the static demo at /nj-business-demo/index.html. Verify: 1) Header nav links render and hero loads the skyline image; 2) Cross-domain button 'Go to State Portal' decorates and navigates; 3) Registration flow: step-1 form interactions fire and navigating proceeds to step-2, step-3, step-4 with summary; 4) Permit catalog loads 4 items, add-to-cart updates session and counter, checkout renders items, submit purchase triggers alert then returns home; 5) Resource download link exists in footer; 6) Help articles visibility events fire on scroll; 7) All pages load without JS errors."
+
+frontend:
+  - task: "Header navigation and hero image loading"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/index.html"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify header nav links render and hero loads skyline image"
+
+  - task: "Cross-domain navigation to State Portal"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/js/cross-domain.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify 'Go to State Portal' button decorates and navigates properly"
+
+  - task: "Registration flow step-1 form interactions"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/register/step-1-business-type.html"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify form interactions fire and navigation to step-2 works"
+
+  - task: "Registration flow steps 2-4 with summary"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/register/"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify step-2, step-3, step-4 flow with summary display"
+
+  - task: "Permit catalog with 4 items and add-to-cart functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/permits/catalog.html"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify catalog loads 4 items, add-to-cart updates session and counter"
+
+  - task: "Checkout flow and purchase completion"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/permits/checkout.html"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify checkout renders items, submit purchase triggers alert and returns home"
+
+  - task: "Resource download link in footer"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/index.html"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify resource download link exists in footer"
+
+  - task: "Help articles visibility events on scroll"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/help/articles.html"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify help articles visibility events fire on scroll"
+
+  - task: "All pages load without JS errors"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/nj-business-demo/"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+        - agent: "testing"
+        - comment: "Initial testing required - verify all pages load without JavaScript errors"
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+
+test_plan:
+  current_focus:
+    - "Header navigation and hero image loading"
+    - "Cross-domain navigation to State Portal"
+    - "Registration flow step-1 form interactions"
+    - "Registration flow steps 2-4 with summary"
+    - "Permit catalog with 4 items and add-to-cart functionality"
+    - "Checkout flow and purchase completion"
+    - "All pages load without JS errors"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+    - message: "Starting comprehensive testing of NJ Business Portal static demo. Will test all functionality including navigation, forms, ecommerce flow, and cross-domain tracking."
