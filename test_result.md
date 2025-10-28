@@ -289,16 +289,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Help articles visibility events on scroll"
-  stuck_tasks:
-    - "Header navigation and hero image loading"
-    - "Cross-domain navigation to State Portal"
-    - "Registration flow step-1 form interactions"
     - "Registration flow steps 2-4 with summary"
-    - "Permit catalog with 4 items and add-to-cart functionality"
-    - "Checkout flow and purchase completion"
-    - "Resource download link in footer"
-    - "All pages load without JS errors"
+  stuck_tasks:
+    - "Registration flow steps 2-4 with summary"
   test_all: false
   test_priority: "stuck_first"
 
