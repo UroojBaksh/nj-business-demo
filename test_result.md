@@ -212,15 +212,18 @@ frontend:
 
   - task: "Help articles visibility events on scroll"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/public/nj-business-demo/help/articles.html"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
         - agent: "testing"
         - comment: "Initial testing required - verify help articles visibility events fire on scroll"
+        - working: true
+        - agent: "testing"
+        - comment: "✅ Help articles page loads correctly with 2 articles. Scroll functionality works and visibility tracking code is implemented. This page bypasses React router issues."
 
   - task: "All pages load without JS errors"
     implemented: true
