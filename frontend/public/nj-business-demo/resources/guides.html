@@ -10,10 +10,16 @@
   <script src="../js/debug-helper.js" defer></script>
 </head>
 <body>
-  <div class="container-nj mt-5">
-    <h1>Guides & Downloads</h1>
-    <div class="card-nj mt-3">
-      <div class="d-flex justify-content-between align-items-center">
+  <div class="container-nj mt-4">
+    <div class="step-toolbar">
+      <div class="left">
+        <a class="btn-nj btn-ghost-nj btn-sm-nj" href="../index.html">← Back</a>
+        <h2 class="m-0">Guides & Downloads</h2>
+      </div>
+    </div>
+
+    <div class="card-nj card-anim reveal mt-3">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div>
           <h3 class="mb-1">Getting Started in NJ</h3>
           <p class="mb-0 text-muted">Step-by-step for new entrepreneurs</p>
@@ -22,7 +28,7 @@
       </div>
     </div>
 
-    <div class="card-nj mt-4">
+    <div class="card-nj card-anim reveal mt-4">
       <h3 class="mb-2">Intro Video: Starting a Business</h3>
       <video id="guideVideo" controls preload="metadata" width="100%" style="border-radius: 12px;">
         <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
@@ -31,6 +37,12 @@
       <div class="form-help mt-2">We record anonymous engagement milestones (25/50/75/100%).</div>
     </div>
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      var obs = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target);} }); }, { threshold:0.18 });
+      document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el); });
+    });
+  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function(){
