@@ -31,8 +31,11 @@
       const cartEl = document.getElementById('cart'); const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
       if (!cart.length) { cartEl.innerHTML = '<div class="alert-inline">No permits added yet.</div>'; return; }
       let total = 0;
-      const rows = cart.map(item => { total += (item.price * (item.quantity||1)); return `<div class=\"card-nj mb-2\"><div class=\"d-flex justify-content-between\"><div><strong>${item.item_name}</strong><div class=\"small text-muted\">${item.item_category} • ${item.item_category2}</div></div><div>$${item.price.toFixed(2)}</div></div></div>`; });
+      const rows = cart.map((item, idx) => { total += (item.price * (item.quantity||1)); return `<div class=\"card-nj mb-2\"><div class=\"d-flex justify-content-between align-items-center\"><div><strong>${item.item_name}</strong><div class=\"small text-muted\">${item.item_category} • ${item.item_category2}</div></div><div class=\"d-flex align-items-center gap-2\"><div>$${item.price.toFixed(2)}</div><button class=\"btn-nj btn-ghost-nj btn-sm-nj\" data-del=\"${idx}\">Remove</button></div></div></div>`; });
       cartEl.innerHTML = rows.join('') + `<div class=\"d-flex justify-content-end\"><div class=\"badge-soft\">Total: $${total.toFixed(2)}</div></div>`;
+      cartEl.querySelectorAll('[data-del]').forEach(btn => { btn.addEventListener('click', function(){
+        const i = parseInt(this.getAttribute('data-del'),10); const c = JSON.parse(sessionStorage.getItem('permit_cart')||'[]'); c.splice(i,1); sessionStorage.setItem('permit_cart', JSON.stringify(c)); renderCart();
+      });});
       window.njTrack('begin_checkout', { total_permits: cart.length, total_value: total, estimated_processing_time: 'Varies' });
     }
     function purchase() {
