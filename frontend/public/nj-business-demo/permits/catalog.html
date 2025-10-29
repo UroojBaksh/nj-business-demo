@@ -81,8 +81,9 @@
     showNotification(message, type = 'success') {
       const alertDiv = document.createElement('div');
       alertDiv.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
-      alertDiv.style.zIndex = '9999'; alertDiv.textContent = message; document.body.appendChild(alertDiv);
-      setTimeout(() => { alertDiv.remove(); }, 2000);
+      alertDiv.style.zIndex = '9999'; alertDiv.innerHTML = `<strong>${message}</strong> <a class="ms-2" href="./checkout.html">Go to Checkout →</a>`;
+      document.body.appendChild(alertDiv);
+      setTimeout(() => { alertDiv.remove(); }, 2600);
     }
     updateCartCounter() { const counter = document.getElementById('cartCounter'); if (counter) counter.textContent = this.cart.length; }
   }
