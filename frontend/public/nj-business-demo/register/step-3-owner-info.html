@@ -36,16 +36,18 @@
   </div>
 
   <script>
-    (function(){
-      const form = document.getElementById('ownerInfoForm'); const start = Date.now();
-      window.njTrack('form_start', { form_name: 'business_registration', form_id: 'form_step_3', total_fields: form.querySelectorAll('input,select').length });
+    document.addEventListener('DOMContentLoaded', function(){
+      const form = document.getElementById('ownerInfoForm');
+      const start = Date.now();
+      if (typeof window.njTrack === 'function') window.njTrack('form_start', { form_name: 'business_registration', form_id: 'form_step_3', total_fields: form.querySelectorAll('input,select').length });
       form.addEventListener('submit', function(e){
-        e.preventDefault(); const fd = new FormData(form);
+        e.preventDefault();
+        const fd = new FormData(form);
         sessionStorage.setItem('registration_step_3', JSON.stringify({ ownerName: fd.get('ownerName'), ownerEmail: fd.get('ownerEmail'), ownerPhone: fd.get('ownerPhone'), ownership: fd.get('ownership'), completionTime: Date.now()-start }));
-        window.njTrack('registration_step_complete', { step_number: 3, step_name: 'owner_info', time_spent: Math.round((Date.now()-start)/1000), fields_completed: 4 });
-        setTimeout(()=>{ window.location.href = './step-4-confirmation.html'; }, 250);
+        if (typeof window.njTrack === 'function') window.njTrack('registration_step_complete', { step_number: 3, step_name: 'owner_info', time_spent: Math.round((Date.now()-start)/1000), fields_completed: 4 });
+        setTimeout(()=>{ window.location.href = './step-4-confirmation.html'; }, 200);
       });
-    })();
+    });
   </script>
 </body>
 </html>

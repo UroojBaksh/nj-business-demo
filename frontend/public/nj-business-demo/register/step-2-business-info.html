@@ -45,19 +45,21 @@
   </div>
 
   <script>
-    (function(){
-      const form = document.getElementById('businessInfoForm'); const start = Date.now();
-      window.njTrack('form_start', { form_name: 'business_registration', form_id: 'form_step_2', total_fields: form.querySelectorAll('input,select').length });
+    document.addEventListener('DOMContentLoaded', function(){
+      const form = document.getElementById('businessInfoForm');
+      const start = Date.now();
+      if (typeof window.njTrack === 'function') window.njTrack('form_start', { form_name: 'business_registration', form_id: 'form_step_2', total_fields: form.querySelectorAll('input,select').length });
       form.addEventListener('submit', function(e){
-        e.preventDefault(); const fd = new FormData(form);
+        e.preventDefault();
+        const fd = new FormData(form);
         const name = fd.get('businessName'), ein = fd.get('ein'), county = fd.get('county'), language = fd.get('language');
-        if (!/^[-0-9]{9,10}$/.test(ein)) window.njTrack('form_validation_error', { field_name: 'ein', error_type: 'pattern', error_message: 'Invalid EIN format' });
+        if (!/^[-0-9]{9,10}$/.test(ein)) { if (typeof window.njTrack === 'function') window.njTrack('form_validation_error', { field_name: 'ein', error_type: 'pattern', error_message: 'Invalid EIN format' }); return; }
         sessionStorage.setItem('county', county); sessionStorage.setItem('preferred_language', language);
         sessionStorage.setItem('registration_step_2', JSON.stringify({ businessName: name, ein, county, language, completionTime: Date.now()-start }));
-        window.njTrack('registration_step_complete', { step_number: 2, step_name: 'business_info', time_spent: Math.round((Date.now()-start)/1000), fields_completed: 4 });
-        setTimeout(()=>{ window.location.href = './step-3-owner-info.html'; }, 250);
+        if (typeof window.njTrack === 'function') window.njTrack('registration_step_complete', { step_number: 2, step_name: 'business_info', time_spent: Math.round((Date.now()-start)/1000), fields_completed: 4 });
+        setTimeout(()=>{ window.location.href = './step-3-owner-info.html'; }, 200);
       });
-    })();
+    });
   </script>
 </body>
 </html>
