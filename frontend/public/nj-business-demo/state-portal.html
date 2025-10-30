@@ -132,6 +132,11 @@
       const src = sessionStorage.getItem('cross_domain_source') || document.referrer || 'Business.NJ.gov Portal';
       const arrive = new Date();
 
+      // Persist incoming linker value for fallback decoration later
+      if (linkerPresent) {
+        sessionStorage.setItem('gl_param_value', qp.get('_gl'));
+      }
+
       document.getElementById('cd-source').textContent = src;
       document.getElementById('cd-time').textContent = arrive.toLocaleString();
 
