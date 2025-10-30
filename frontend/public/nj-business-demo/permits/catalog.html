@@ -76,6 +76,7 @@
         sessionStorage.setItem('permit_cart', JSON.stringify(this.cart));
         this.showNotification(`${permit.item_name} added to application!`);
         this.updateCartCounter();
+        this.focusBanner();
       } else { this.showNotification('This permit is already in your application', 'warning'); }
     }
     showNotification(message, type = 'success') {
