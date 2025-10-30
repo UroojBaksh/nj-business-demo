@@ -1,0 +1,30 @@
+{
+  "exported_at": "demo",
+  "export_format_version": 2,
+  "container": {
+    "publicId": "GTM-DEMO123",
+    "name": "NJ Business Portal Demo",
+    "usageContext": ["WEB"]
+  },
+  "variable": [
+    {"name": "DLV - Business Type", "type": "v", "parameter": [{"type":"TEMPLATE","key":"name","value":"business_entity_type"}]},
+    {"name": "DLV - Industry", "type": "v", "parameter": [{"type":"TEMPLATE","key":"name","value":"industry_vertical"}]},
+    {"name": "DLV - MWBE Status", "type": "v", "parameter": [{"type":"TEMPLATE","key":"name","value":"mwbe_certification_status"}]},
+    {"name": "DLV - User Region", "type": "v", "parameter": [{"type":"TEMPLATE","key":"name","value":"geographic_region"}]},
+    {"name": "CJS - Session Duration", "type": "jsm", "parameter": [{"type":"TEMPLATE","key":"javascript","value":"function(){var s=sessionStorage.getItem('session_start');return s?Math.round((Date.now()-parseInt(s))/1000):0;}"}]},
+    {"name": "CJS - Form Completion Rate", "type": "jsm", "parameter": [{"type":"TEMPLATE","key":"javascript","value":"function(){var f=document.querySelectorAll('input:valid,select:valid').length;var t=document.querySelectorAll('input,select').length;return t>0?Math.round((f/t)*100):0;}"}]},
+    {"name": "CJS - Page Scroll Depth", "type": "jsm", "parameter": [{"type":"TEMPLATE","key":"javascript","value":"function(){var h=document.documentElement;var b=document.body;return Math.round(((h.scrollTop||b.scrollTop)/((h.scrollHeight||b.scrollHeight)-h.clientHeight))*100);}"}]}
+  ],
+  "trigger": [
+    {"name":"All Pages","type":"PAGEVIEW"},
+    {"name":"Form Submit - Registration","type":"FORM_SUBMISSION","filter":[{"type":"CONTAINS","parameter":[{"type":"TEMPLATE","key":"arg0","value":"{{Page Path}}"},{"type":"TEMPLATE","key":"arg1","value":"/register/"}]}]},
+    {"name":"Scroll Depth - 25/50/75/100","type":"SCROLL_DEPTH","parameter":[{"type":"INTEGER","key":"percentages","value":"25,50,75,100"}]},
+    {"name":"Element Visibility - Help Articles","type":"ELEMENT_VISIBILITY","parameter":[{"type":"TEMPLATE","key":"selector","value":".help-article"},{"type":"INTEGER","key":"minPercentVisible","value":"50"}]},
+    {"name":"Timer - Engagement","type":"TIMER","parameter":[{"type":"INTEGER","key":"interval","value":"15000"}]},
+    {"name":"Click - External Links","type":"CLICK","filter":[{"type":"DOES_NOT_CONTAIN","parameter":[{"type":"TEMPLATE","key":"arg0","value":"{{Click URL}}"},{"type":"TEMPLATE","key":"arg1","value":"github.io"}]}]}
+  ],
+  "tag": [
+    {"name":"GA4 Configuration","type":"gaawc","parameter":[{"type":"TEMPLATE","key":"measurementId","value":"G-DEMO123456"},{"type":"BOOLEAN","key":"debug_mode","value":"true"},{"type":"TEMPLATE","key":"cookie_domain","value":"auto"}],"firingTriggerId":["All Pages"]},
+    {"name":"GA4 Event - Passthrough","type":"gaawe","parameter":[{"type":"TEMPLATE","key":"eventName","value":"{{Event}}"}],"firingTriggerId":["All Pages"]}
+  ]
+}
