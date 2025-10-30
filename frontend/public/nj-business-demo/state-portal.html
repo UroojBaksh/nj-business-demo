@@ -195,17 +195,36 @@
     }
 
     function continueToPermits(){
-      const dest = '/nj-business-demo/permits/catalog.html';
+      // Always build an absolute URL for reliability across domains
+      const base = window.location.origin;
+      const destPath = '/nj-business-demo/permits/catalog.html';
+      let dest = base + destPath;
       const exitMs = performance.now();
+
+      function go(url){
+        if (typeof window.njTrack === 'function') window.njTrack('state_portal_exit', { exit_time_on_page: Math.round(exitMs), verifications_completed: 4, destination: url });
+        window.location.href = url;
+      }
+
       if (window.gtag) {
-        gtag('get', 'G-DEMO123456', 'linker', function(linker){
-          const decorated = linker ? linker.decorate(dest) : dest;
-          if (typeof window.njTrack === 'function') window.njTrack('state_portal_exit', { exit_time_on_page: Math.round(exitMs), verifications_completed: 4, destination: decorated });
-          window.location.href = decorated;
-        });
+        try {
+          gtag('get', 'G-DEMO123456', 'linker', function(linker){
+            try {
+              const decorated = linker ? linker.decorate(dest) : dest;
+              go(decorated);
+            } catch(e) {
+              // fallback: append stored _gl if present
+              const gl = sessionStorage.getItem('gl_param_value');
+              if (gl) go(dest + (dest.includes('?')?'&':'?') + '_gl=' + encodeURIComponent(gl)); else go(dest);
+            }
+          });
+        } catch(e) {
+          const gl = sessionStorage.getItem('gl_param_value');
+          if (gl) go(dest + (dest.includes('?')?'&':'?') + '_gl=' + encodeURIComponent(gl)); else go(dest);
+        }
       } else {
-        if (typeof window.njTrack === 'function') window.njTrack('state_portal_exit', { exit_time_on_page: Math.round(exitMs), verifications_completed: 4, destination: dest });
-        window.location.href = dest;
+        const gl = sessionStorage.getItem('gl_param_value');
+        if (gl) go(dest + (dest.includes('?')?'&':'?') + '_gl=' + encodeURIComponent(gl)); else go(dest);
       }
     }
     window.continueToPermits = continueToPermits;
