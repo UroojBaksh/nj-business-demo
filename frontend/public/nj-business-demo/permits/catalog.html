@@ -86,6 +86,8 @@
       setTimeout(() => { alertDiv.remove(); }, 2600);
     }
     updateCartCounter() { const counter = document.getElementById('cartCounter'); if (counter) counter.textContent = this.cart.length; }
+    // Ensure banner is focus-visible for a11y
+    focusBanner(){ const el = document.querySelector('.alert.position-fixed'); if (el){ el.setAttribute('tabindex','-1'); el.focus({preventScroll:true}); } }
   }
   document.addEventListener('DOMContentLoaded', () => { new EcommerceTracker(); });
   </script>
