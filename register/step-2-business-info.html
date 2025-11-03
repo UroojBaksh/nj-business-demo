@@ -23,7 +23,36 @@
       <div class="progress-bar" role="progressbar" style="width: 50%">Step 2 of 4</div>
     </div>
 
+    
     <form id="businessInfoForm" class="card-nj">
+      const formFields = form.querySelectorAll('input, select');
+formFields.forEach(field => {
+  field.addEventListener('focus', () => {
+    if (typeof window.njTrack === 'function') {
+      window.njTrack('form_field_focus', {
+        field_name: field.name,
+        form_id: 'form_step_2'
+      });
+    }
+  });
+  
+  field.addEventListener('change', () => {
+    if (field.value && typeof window.njTrack === 'function') {
+      window.njTrack('form_field_complete', {
+        field_name: field.name,
+        form_id: 'form_step_2'
+      });
+    }
+  });
+});
+
+// Add step view tracking
+if (typeof window.njTrack === 'function') {
+  window.njTrack('form_step_viewed', {
+    step_number: 2,
+    step_name: 'business_info'
+  });
+}
       <div class="mb-4"><label class="form-label" for="businessName">Legal Business Name</label><input class="form-control input-tokenized" required id="businessName" name="businessName" /></div>
       <div class="mb-4"><label class="form-label" for="ein">Employer Identification Number (EIN)</label><input class="form-control input-tokenized" id="ein" name="ein" placeholder="Format: 12-3456789" pattern="^[0-9-]{9,10}$" required /></div>
       <div class="mb-4"><label class="form-label" for="county">County</label>
