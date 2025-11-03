@@ -1,49 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Permit Checkout</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="../css/styles.css" />
-  <script src="../js/tracking.js" defer></script>
-  <script src="../js/debug-helper.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permit Checkout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../js/tracking.js" defer></script>
+    <script src="../js/debug-helper.js" defer></script>
 </head>
 <body>
-  <div class="container-nj mt-5">
-    <h1 class="mb-3">Application Checkout</h1>
-    <div id="cart"></div>
-    <div class="card-nj mt-3">
-      <h3>Payment</h3>
-      <div class="row g-3">
-        <div class="col-md-6"><label class="form-label">Card Number</label><input class="form-control input-tokenized" /></div>
-        <div class="col-md-3"><label class="form-label">Expiry</label><input class="form-control input-tokenized" /></div>
-        <div class="col-md-3"><label class="form-label">CVC</label><input class="form-control input-tokenized" /></div>
-      </div>
-      <div class="d-flex justify-content-end mt-3">
-        <button id="purchase" class="btn-nj btn-primary-nj">Submit Application</button>
-      </div>
-    </div>
-  </div>
+    <div class="container-nj mt-5">
+        <div class="step-toolbar">
+            <div class="left">
+                <a class="btn-nj btn-ghost-nj btn-sm-nj" href="../permits/catalog.html">← Back to Permits</a>
+                <h2 class="m-0">Application Checkout</h2>
+            </div>
+        </div>
 
-  <script>
-    function renderCart() {
-      const cartEl = document.getElementById('cart'); const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
-      if (!cart.length) { cartEl.innerHTML = '<div class="alert-inline">No permits added yet.</div>'; return; }
-      let total = 0;
-      const rows = cart.map((item, idx) => { total += (item.price * (item.quantity||1)); return `<div class=\"card-nj mb-2\"><div class=\"d-flex justify-content-between align-items-center\"><div><strong>${item.item_name}</strong><div class=\"small text-muted\">${item.item_category} • ${item.item_category2}</div></div><div class=\"d-flex align-items-center gap-2\"><div>$${item.price.toFixed(2)}</div><button class=\"btn-nj btn-ghost-nj btn-sm-nj\" data-del=\"${idx}\">Remove</button></div></div></div>`; });
-      cartEl.innerHTML = rows.join('') + `<div class=\"d-flex justify-content-end\"><div class=\"badge-soft\">Total: $${total.toFixed(2)}</div></div>`;
-      cartEl.querySelectorAll('[data-del]').forEach(btn => { btn.addEventListener('click', function(){
-        const i = parseInt(this.getAttribute('data-del'),10); const c = JSON.parse(sessionStorage.getItem('permit_cart')||'[]'); c.splice(i,1); sessionStorage.setItem('permit_cart', JSON.stringify(c)); renderCart();
-      });});
-      window.njTrack('begin_checkout', { total_permits: cart.length, total_value: total, estimated_processing_time: 'Varies' });
-    }
-    function purchase() {
-      const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]'); let total = cart.reduce((acc, it) => acc + it.price * (it.quantity||1), 0); const tx = 'TX_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
-      window.njTrack('purchase', { transaction_id: tx, total_value: total, permits_array: cart, payment_method: 'card' });
-      alert('Application submitted! Transaction: ' + tx); sessionStorage.removeItem('permit_cart'); window.location.href = '../index.html';
-    }
-    document.addEventListener('DOMContentLoaded', function(){ renderCart(); document.getElementById('purchase').addEventListener('click', purchase); });
-  </script>
+        <!-- Cart Summary Section -->
+        <div class="card-nj mb-4">
+            <h3>Order Summary</h3>
+            <div id="cart"></div>
+        </div>
+
+        <!-- Payment Form Section -->
+        <div class="card-nj">
+            <h3>Payment Information</h3>
+            <form id="paymentForm" class="needs-validation">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="cardName">Cardholder Name *</label>
+                        <input 
+                            class="form-control input-tokenized" 
+                            id="cardName"
+                            name="cardName"
+                            type="text"
+                            placeholder="John Doe"
+                            required
+                        />
+                        <div class="form-text">Name as it appears on card</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="cardNumber">Card Number *</label>
+                        <input 
+                            class="form-control input-tokenized" 
+                            id="cardNumber"
+                            name="cardNumber"
+                            type="text"
+                            placeholder="4242 4242 4242 4242"
+                            inputmode="numeric"
+                            pattern="[0-9\s]{15,23}"
+                            maxlength="23"
+                            required
+                        />
+                        <div class="form-text">16 digits (spaces optional)</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="expiry">Expiry Date (MM/YY) *</label>
+                        <input 
+                            class="form-control input-tokenized" 
+                            id="expiry"
+                            name="expiry"
+                            type="text"
+                            placeholder="12/25"
+                            inputmode="numeric"
+                            pattern="(0[1-9]|1[0-2])\/\d{2}"
+                            maxlength="5"
+                            required
+                        />
+                        <div class="form-text">Format: MM/YY</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="cvc">CVC *</label>
+                        <input 
+                            class="form-control input-tokenized" 
+                            id="cvc"
+                            name="cvc"
+                            type="text"
+                            placeholder="123"
+                            inputmode="numeric"
+                            pattern="[0-9]{3,4}"
+                            maxlength="4"
+                            required
+                        />
+                        <div class="form-text">3-4 digits on back</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="zipCode">Billing Zip Code *</label>
+                        <input 
+                            class="form-control input-tokenized" 
+                            id="zipCode"
+                            name="zipCode"
+                            type="text"
+                            placeholder="07002"
+                            inputmode="numeric"
+                            pattern="[0-9]{5}"
+                            maxlength="5"
+                            required
+                        />
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="agreeTerms"
+                                name="agreeTerms"
+                                required
+                            />
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to submit this application and understand processing fees apply *
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <a class="btn-nj btn-ghost-nj" href="../permits/catalog.html">← Back</a>
+                    <button type="submit" id="purchase" class="btn-nj btn-primary-nj">
+                        Submit Application: $<span id="totalAmount">0.00</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Helper: Format card number with spaces
+        function formatCardNumber(value) {
+            return value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+        }
+
+        // Helper: Format expiry as MM/YY
+        function formatExpiry(value) {
+            value = value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                return value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            return value;
+        }
+
+        // Validate card number (Luhn algorithm - basic)
+        function validateCardNumber(num) {
+            const digits = num.replace(/\D/g, '');
+            if (digits.length < 15 || digits.length > 16) return false;
+            let sum = 0, isEven = false;
+            for (let i = digits.length - 1; i >= 0; i--) {
+                let digit = parseInt(digits[i], 10);
+                if (isEven) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                sum += digit;
+                isEven = !isEven;
+            }
+            return sum % 10 === 0;
+        }
+
+        // Validate expiry format
+        function validateExpiry(exp) {
+            const match = exp.match(/^(0[1-9]|1[0-2])\/\d{2}$/);
+            if (!match) return false;
+            const [month, year] = exp.split('/');
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear() % 100;
+            const currentMonth = currentDate.getMonth() + 1;
+            const expYear = parseInt(year, 10);
+            const expMonth = parseInt(month, 10);
+            if (expYear < currentYear) return false;
+            if (expYear === currentYear && expMonth < currentMonth) return false;
+            return true;
+        }
+
+        // Render cart with tracking
+        function renderCart() {
+            const cartEl = document.getElementById('cart');
+            const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
+
+            if (!cart.length) {
+                cartEl.innerHTML = '<div class="alert alert-warning">No permits added. <a href="../permits/catalog.html">Browse permits</a></div>';
+                document.getElementById('purchase').disabled = true;
+                return;
+            }
+
+            let total = 0;
+            const rows = cart.map((item, idx) => {
+                const itemTotal = item.price * (item.quantity || 1);
+                total += itemTotal;
+                return `
+                    <div class="card-nj mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${item.item_name}</strong>
+                                <div class="small text-muted">${item.item_category} • ${item.item_category2}</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div>$${itemTotal.toFixed(2)}</div>
+                                <button type="button" class="btn-nj btn-ghost-nj btn-sm-nj" data-del="${idx}" data-item-name="${item.item_name}" data-item-price="${item.price}">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            rows.push(`
+                <div class="d-flex justify-content-end mt-3 pt-3 border-top">
+                    <div>
+                        <span class="text-muted">Total:</span>
+                        <strong style="font-size: 1.2em; color: hsl(var(--primary))">$${total.toFixed(2)}</strong>
+                    </div>
+                </div>
+            `);
+
+            cartEl.innerHTML = rows.join('');
+            document.getElementById('totalAmount').textContent = total.toFixed(2);
+
+            // Attach remove handlers with tracking
+            cartEl.querySelectorAll('[data-del]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-del'), 10);
+                    const itemName = this.getAttribute('data-item-name');
+                    const itemPrice = parseFloat(this.getAttribute('data-item-price'));
+                    const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
+
+                    // Track removal
+                    if (typeof window.njTrack === 'function') {
+                        window.njTrack('remove_from_cart', {
+                            item_name: itemName,
+                            item_price: itemPrice,
+                            remaining_items: cart.length - 1,
+                            remaining_total: cart.reduce((sum, item, i) => i === idx ? sum : sum + item.price, 0)
+                        });
+                    }
+
+                    cart.splice(idx, 1);
+                    sessionStorage.setItem('permit_cart', JSON.stringify(cart));
+                    renderCart();
+                });
+            });
+
+            // Track checkout view
+            if (typeof window.njTrack === 'function') {
+                window.njTrack('checkout_page_viewed', {
+                    cart_size: cart.length,
+                    total_value: total,
+                    items: cart.map(i => ({name: i.item_name, price: i.price}))
+                });
+
+                window.njTrack('cart_review', {
+                    items_count: cart.length,
+                    total_value: total,
+                    items: cart.map(i => ({name: i.item_name, price: i.price}))
+                });
+            }
+        }
+
+        // Initialize form on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCart();
+
+            const form = document.getElementById('paymentForm');
+            const cardInput = document.getElementById('cardNumber');
+            const expiryInput = document.getElementById('expiry');
+            const cvcInput = document.getElementById('cvc');
+            const zipInput = document.getElementById('zipCode');
+
+            // Format card number as user types
+            cardInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+                e.target.value = formatCardNumber(value);
+
+                // Track field interaction
+                if (typeof window.njTrack === 'function') {
+                    window.njTrack('checkout_field_focus', {
+                        field_name: 'card_number',
+                        field_filled: value.length > 0
+                    });
+                }
+            });
+
+            // Format expiry as user types
+            expiryInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                e.target.value = formatExpiry(value);
+
+                if (typeof window.njTrack === 'function') {
+                    window.njTrack('checkout_field_focus', {
+                        field_name: 'expiry',
+                        field_filled: value.length === 4
+                    });
+                }
+            });
+
+            // Numeric only for CVC
+            cvcInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+
+                if (typeof window.njTrack === 'function') {
+                    window.njTrack('checkout_field_focus', {
+                        field_name: 'cvc',
+                        field_filled: e.target.value.length >= 3
+                    });
+                }
+            });
+
+            // Numeric only for zip
+            zipInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5);
+            });
+
+            // Track field completion
+            [cardInput, expiryInput, cvcInput, zipInput].forEach(input => {
+                input.addEventListener('change', function() {
+                    if (this.value) {
+                        if (typeof window.njTrack === 'function') {
+                            window.njTrack('checkout_field_complete', {
+                                field_name: this.name,
+                                field_filled: true
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Validation
+                const cardNum = cardInput.value;
+                const expiry = expiryInput.value;
+                const cvc = cvcInput.value;
+                const zip = zipInput.value;
+
+                let errors = [];
+
+                if (!validateCardNumber(cardNum)) {
+                    errors.push('Invalid card number');
+                    if (typeof window.njTrack === 'function') {
+                        window.njTrack('checkout_validation_error', {
+                            field_name: 'card_number',
+                            error: 'Invalid card number'
+                        });
+                    }
+                }
+
+                if (!validateExpiry(expiry)) {
+                    errors.push('Invalid or expired card');
+                    if (typeof window.njTrack === 'function') {
+                        window.njTrack('checkout_validation_error', {
+                            field_name: 'expiry',
+                            error: 'Invalid or expired'
+                        });
+                    }
+                }
+
+                if (cvc.length < 3) {
+                    errors.push('Invalid CVC');
+                    if (typeof window.njTrack === 'function') {
+                        window.njTrack('checkout_validation_error', {
+                            field_name: 'cvc',
+                            error: 'Too short'
+                        });
+                    }
+                }
+
+                if (zip.length !== 5) {
+                    errors.push('Invalid zip code');
+                    if (typeof window.njTrack === 'function') {
+                        window.njTrack('checkout_validation_error', {
+                            field_name: 'zip_code',
+                            error: 'Invalid format'
+                        });
+                    }
+                }
+
+                if (errors.length > 0) {
+                    alert('Please fix errors:\n' + errors.join('\n'));
+                    return;
+                }
+
+                // Process purchase
+                const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
+                const total = cart.reduce((acc, it) => acc + it.price * (it.quantity || 1), 0);
+                const tx = 'TX_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+
+                // Track purchase with all details
+                if (typeof window.njTrack === 'function') {
+                    window.njTrack('purchase', {
+                        transaction_id: tx,
+                        total_value: total,
+                        currency: 'USD',
+                        items: cart.map(i => ({
+                            name: i.item_name,
+                            category: i.item_category,
+                            price: i.price,
+                            quantity: i.quantity || 1
+                        })),
+                        payment_method: 'card',
+                        items_count: cart.length
+                    });
+
+                    window.njTrack('checkout_complete', {
+                        transaction_id: tx,
+                        total_value: total
+                    });
+                }
+
+                // Success
+                alert('✓ Application submitted successfully!\nTransaction ID: ' + tx);
+                sessionStorage.removeItem('permit_cart');
+                window.location.href = '../index.html';
+            });
+
+            // Detect checkout abandonment on page exit
+            window.addEventListener('beforeunload', function() {
+                const cart = JSON.parse(sessionStorage.getItem('permit_cart') || '[]');
+                const formFilled = form.checkValidity();
+
+                if (cart.length > 0 && !formFilled && typeof window.njTrack === 'function') {
+                    window.njTrack('checkout_abandoned', {
+                        cart_size: cart.length,
+                        cart_value: cart.reduce((sum, item) => sum + item.price, 0),
+                        form_completion: Math.round((Array.from(form.elements).filter(el => el.value).length / form.elements.length) * 100),
+                        reason: 'page_exit'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
