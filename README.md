@@ -32,6 +32,17 @@ Analysis of simulated registration flow reveals:
 - **20% drop-off at Step 3** - Form fatigue from personal fields costs **$16K/month**
 - **21% drop-off at Verification** - Cross-domain redirect friction costs **$12K/month**
 
+### Note on Synthetic Data
+
+This analysis uses 1,000 simulated user journeys based on:
+- Industry benchmarks for government portal drop-off rates
+- Assumed permit cost: $125 (adjust based on actual pricing)
+- Assumed traffic volume: 1,000 registrations/month
+
+**Revenue projections ($81K)** represent potential impact if conversion improves from 18% → 24%.
+
+Once the portal receives real traffic, the same analysis framework applies to actual GA4 data and real revenue figures.
+
 ![Funnel Chart](analytics/funnel_analysis/funnel_chart.png)
 
 **Revenue impact of fixes:**
